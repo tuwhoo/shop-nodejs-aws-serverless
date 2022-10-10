@@ -1,0 +1,83 @@
+openapi: 3.0.0
+components:
+  schemas:
+    NotFoundResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          default: 404 - Not Found
+    ProductResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          default: ''
+        description:
+          type: string
+          default: ''
+        price:
+          type: number
+          default: 0
+          minimum: 0
+      required:
+        - title
+        - price
+    ProductsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          title:
+            type: string
+            default: ''
+          description:
+            type: string
+            default: ''
+          price:
+            type: number
+            default: 0
+            minimum: 0
+        required:
+          - title
+          - price
+  securitySchemes: {}
+info:
+  title: product-service
+  description: Product service API
+  version: '1'
+paths:
+  /products:
+    get:
+      operationId: getProductsList
+      summary: Get product by product ID
+      description: Provide productId as a path params
+      responses:
+        '200':
+          description: Get all products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsResponse'
+  '/products/{productId}':
+    get:
+      operationId: getProductById
+      summary: Get product by product ID
+      description: Provide productId as a path params
+      responses:
+        '200':
+          description: Found product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
