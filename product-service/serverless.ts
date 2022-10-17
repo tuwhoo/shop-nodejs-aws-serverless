@@ -1,11 +1,11 @@
-// import type { AWS } from '@serverless/typescript';
+import type { AWS } from '@serverless/typescript';
 
 import DocumentationModels from '@models/Documentation';
 import getProductById from '@functions/getProductById';
 import getProductsList from '@functions/getProductsList';
 import createProduct from '@functions/createProduct';
 
-const serverlessConfiguration: any = {
+const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '3',
   useDotenv: true,
