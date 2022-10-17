@@ -1,8 +1,8 @@
 import type { APIGatewayEvent, Handler } from "aws-lambda"
 
 import * as db from '@libs/db'
-import { middyfy } from '@libs/lambda';
 import { dbTables } from "@constants/index";
+import { lambdaWrapper } from '@libs/lambda';
 import { formatJSONResponse } from '@libs/api-gateway';
 
 
@@ -15,4 +15,4 @@ const getProductById: Handler = async (event: APIGatewayEvent) => {
   return formatJSONResponse({ message: '404 - Not Found' }, 404)
 };
 
-export const main = middyfy(getProductById);
+export const main = lambdaWrapper(getProductById);

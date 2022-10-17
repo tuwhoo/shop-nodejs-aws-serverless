@@ -7,11 +7,9 @@ components:
         message:
           type: string
           default: 404 - Not Found
-    ProductResponse:
+    CreateProductRequest:
       type: object
       properties:
-        id:
-          type: string
         title:
           type: string
           default: ''
@@ -29,13 +27,33 @@ components:
       required:
         - title
         - price
+    ProductResponse:
+      type: object
+      properties:
+        title:
+          type: string
+          default: ''
+        description:
+          type: string
+          default: ''
+        price:
+          type: number
+          default: 0
+          minimum: 0
+        id:
+          type: string
+        count:
+          type: number
+          default: 0
+          minimum: 0
+      required:
+        - title
+        - price
     ProductsResponse:
       type: array
       items:
         type: object
         properties:
-          id:
-            type: string
           title:
             type: string
             default: ''
@@ -46,6 +64,8 @@ components:
             type: number
             default: 0
             minimum: 0
+          id:
+            type: string
           count:
             type: number
             default: 0
@@ -71,6 +91,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductsResponse'
+    post:
+      operationId: createProduct
+      summary: Create product and return it
+      description: >-
+        Take product from request body, put it in db and return result in
+        response
+      responses:
+        '200':
+          description: Return created product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
   '/products/{productId}':
     get:
       operationId: getProductById

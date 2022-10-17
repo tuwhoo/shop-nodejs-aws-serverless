@@ -1,4 +1,4 @@
-import { AvailableProductSchema } from './Product';
+import { ProductInsertSchema, AvailableProductSchema } from './Product';
 import { NotFoundSchema } from './Common'
 
 export default [{
@@ -6,6 +6,11 @@ export default [{
   description: 'Not Found Response Model',
   contentType: 'application/json',
   schema: NotFoundSchema,
+},{
+  name: 'CreateProductRequest',
+  description: 'Product Request Model',
+  contentType: 'application/json',
+  schema: ProductInsertSchema,
 }, {
   name: 'ProductResponse',
   description: 'Product Response Model',

@@ -20,3 +20,13 @@ export const get = async (tableName: string, keyName: string, keyValue: string) 
 
   return getResults
 }
+
+export const put = async (tableName: string, item: any) => {
+  const putResult = await db.put({
+    TableName: tableName,
+    Item: item,
+  })
+  .promise();
+
+  return putResult;
+}

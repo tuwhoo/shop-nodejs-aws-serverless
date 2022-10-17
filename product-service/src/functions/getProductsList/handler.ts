@@ -1,8 +1,8 @@
 import type { Handler } from "aws-lambda"
 
 import * as db from '@libs/db'
-import { middyfy } from '@libs/lambda';
 import { dbTables } from "@constants/index";
+import { lambdaWrapper } from '@libs/lambda';
 import { formatJSONResponse } from '@libs/api-gateway';
 
 const getProductList: Handler = async () => {
@@ -17,4 +17,4 @@ const getProductList: Handler = async () => {
   return formatJSONResponse(result);
 };
 
-export const main = middyfy(getProductList);
+export const main = lambdaWrapper(getProductList);

@@ -3,6 +3,7 @@
 import DocumentationModels from '@models/Documentation';
 import getProductById from '@functions/getProductById';
 import getProductsList from '@functions/getProductsList';
+import createProduct from '@functions/createProduct';
 
 const serverlessConfiguration: any = {
   service: 'product-service',
@@ -59,7 +60,7 @@ const serverlessConfiguration: any = {
       },
     },
   },
-  functions: { getProductsList, getProductById },
+  functions: { getProductsList, getProductById, createProduct },
   package: { individually: true },
   custom: {
     esbuild: {
