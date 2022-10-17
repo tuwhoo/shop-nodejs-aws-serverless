@@ -16,6 +16,8 @@
   "dependencies": {
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
+    "aws-sdk": "^2.1233.0",
+    "dotenv": "^16.0.3",
     "json-schema-to-ts": "^2.5.5"
   },
   "devDependencies": {

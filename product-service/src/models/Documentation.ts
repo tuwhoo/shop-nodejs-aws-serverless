@@ -1,4 +1,4 @@
-import { ProductSchema } from './Product';
+import { AvailableProductSchema } from './Product';
 import { NotFoundSchema } from './Common'
 
 export default [{
@@ -10,13 +10,13 @@ export default [{
   name: 'ProductResponse',
   description: 'Product Response Model',
   contentType: 'application/json',
-  schema: ProductSchema,
+  schema: AvailableProductSchema,
 }, {
   name: 'ProductsResponse',
   description: 'Products Response Model',
   contentType: 'application/json',
   schema: {
     type: "array",
-    items: ProductSchema,
+    items: AvailableProductSchema,
   },
 }];

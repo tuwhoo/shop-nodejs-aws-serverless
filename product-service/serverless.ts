@@ -1,13 +1,13 @@
-import type { AWS } from '@serverless/typescript';
+// import type { AWS } from '@serverless/typescript';
 
 import DocumentationModels from '@models/Documentation';
 import getProductById from '@functions/getProductById';
 import getProductsList from '@functions/getProductsList';
 
-
-const serverlessConfiguration: AWS = {
+const serverlessConfiguration: any = {
   service: 'product-service',
   frameworkVersion: '3',
+  useDotenv: true,
   plugins: [
     'serverless-esbuild',
     'serverless-offline',
@@ -25,6 +25,38 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      PRODUCTS_TABLE_NAME: '${env:PRODUCTS_TABLE_NAME}',
+      STOCKS_TABLE_NAME: '${env:STOCKS_TABLE_NAME}',
+    },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: "Allow",
+            Action: [
+              "dynamodb:Query",
+              "dynamodb:Scan",
+              "dynamodb:GetItem",
+              "dynamodb:PutItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:DeleteItem"
+            ],
+            Resource: '${env:PRODUCTS_TABLE_ARN}',
+          },
+          {
+            Effect: "Allow",
+            Action: [
+              "dynamodb:Query",
+              "dynamodb:Scan",
+              "dynamodb:GetItem",
+              "dynamodb:PutItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:DeleteItem"
+            ],
+            Resource: '${env:STOCKS_TABLE_ARN}',
+          },
+        ],
+      },
     },
   },
   functions: { getProductsList, getProductById },
