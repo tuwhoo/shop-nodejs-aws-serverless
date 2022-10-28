@@ -1,6 +1,15 @@
-import middy from "@middy/core"
-import middyJsonBodyParser from "@middy/http-json-body-parser"
+import middy from '@middy/core'
+import middyJsonBodyParser from '@middy/http-json-body-parser'
 
-export const middyfy = (handler) => {
-  return middy(handler).use(middyJsonBodyParser())
+import { requestLogger } from '@libs/request-logger';
+import { formatJSONResponse } from '@libs/api-gateway'; 
+
+export const lambdaWrapper = (handler) => {
+  try {
+    return middy(handler)
+      .use(requestLogger(handler))
+      .use(middyJsonBodyParser())
+  } catch (error) {
+    return formatJSONResponse({ message: error }, 500)
+  }
 }

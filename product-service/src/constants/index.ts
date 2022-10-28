@@ -1,0 +1,1 @@
+export { dbTables } from './db-table-names';
