@@ -1,7 +1,7 @@
 import { lambdaWrapper } from "@libs/lambda";
 import { APIGatewayEvent } from "aws-lambda";
 import { readCsvFile } from "@libs/read-csv";
-import { isFileExist, deleteFile, copyFile, getReadStream } from "@libs/aws-utils";
+import { deleteFile, copyFile, getReadStream } from "@libs/aws-utils";
 
 const importFileParser = async (event: APIGatewayEvent) => {
   const records = (event as any).Records;
@@ -9,13 +9,6 @@ const importFileParser = async (event: APIGatewayEvent) => {
   for (const record of records) {
     const bucketName = record.s3.bucket.name;
     const fileKey = decodeURIComponent(record.s3.object.key.replace(/\+/g, " "));
-
-    const isExist = await isFileExist(bucketName, fileKey);
-
-    if (!isExist) {
-      console.info(`[FINISH]: File in bucket "${bucketName}" with key "${fileKey}" doesn't exist.`);
-      return;
-    }
 
     const newFileKey = fileKey.replace(
       process.env.IMPORT_BUCKET_UPLOAD_PREFIX,
