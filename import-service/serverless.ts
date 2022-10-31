@@ -1,19 +1,16 @@
 import type { AWS } from '@serverless/typescript';
 
-import DocumentationModels from '@models/Documentation';
-import getProductById from '@functions/getProductById';
-import getProductsList from '@functions/getProductsList';
-import createProduct from '@functions/createProduct';
+import importProductsFile from '@functions/importProductsFile';
+import importFileParser from '@functions/importFileParser';
 
 const serverlessConfiguration: AWS = {
-  service: 'product-service',
+  service: 'import-service',
   frameworkVersion: '3',
   useDotenv: true,
   plugins: [
     'serverless-esbuild',
     'serverless-offline',
     'serverless-stage-manager',
-    'serverless-openapi-documentation',
   ],
   provider: {
     name: 'aws',
@@ -26,29 +23,28 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      PRODUCTS_TABLE_NAME: '${env:PRODUCTS_TABLE_NAME}',
-      STOCKS_TABLE_NAME: '${env:STOCKS_TABLE_NAME}',
+      IMPORT_BUCKET_NAME: '${env:IMPORT_BUCKET_NAME}',
+      IMPORT_BUCKET_UPLOAD_PREFIX: '${env:IMPORT_BUCKET_UPLOAD_PREFIX}',
+      IMPORT_BUCKET_PARSED_PREFIX: '${env:IMPORT_BUCKET_PARSED_PREFIX}',
     },
     iam: {
       role: {
         statements: [
           {
-            Effect: "Allow",
-            Action: [
-              "dynamodb:Query",
-              "dynamodb:Scan",
-              "dynamodb:GetItem",
-              "dynamodb:PutItem",
-              "dynamodb:UpdateItem",
-              "dynamodb:DeleteItem"
-            ],
-            Resource: ['${env:PRODUCTS_TABLE_ARN}', '${env:STOCKS_TABLE_ARN}']
+            Effect: 'Allow',
+            Action: ['s3:ListBucket'],
+            Resource: '${env:IMPORT_BUCKET_NAME_ARN}',
+          },
+          {
+            Effect: 'Allow',
+            Action: ['s3:*'],
+            Resource: '${env:IMPORT_BUCKET_NAME_ARN}/*',
           },
         ],
       },
     },
   },
-  functions: { getProductsList, getProductById, createProduct },
+  functions: { importProductsFile, importFileParser },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -62,12 +58,6 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
     stages: ['dev', 'prod'],
-    documentation: {
-      version: '1',
-      title: 'product-service',
-      description: 'Product service API',
-      models: DocumentationModels,
-    },
   },
 };
 
