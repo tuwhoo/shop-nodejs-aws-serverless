@@ -1,6 +1,26 @@
 import * as AWS from "aws-sdk";
 
 const s3Client = new AWS.S3();
+const sqsClient = new AWS.SQS();
+
+export const sendSQSMessage = async (data: any) => {
+  console.info("[Send SQS Message]: ", { data });
+  
+  await sqsClient
+    .sendMessage(
+      {
+        QueueUrl: process.env.SQS_URL,
+        MessageBody: JSON.stringify(data),
+      },
+      (error) => {
+        if (error) {
+          console.error("[Send SQS Message Error]:\n");
+          throw error;
+        }
+      }
+    )
+    .promise();
+}
 
 export const getSignedURL = async (
   bucket: string,
@@ -70,6 +90,8 @@ export const deleteFile = async (bucket: string, key: string) => {
       }
     )
     .promise();
+
+  console.info("[Delete File]: Completed");
 };
 
 export const copyFile = async (bucket: string, key: string, newKey: string) => {
@@ -90,4 +112,6 @@ export const copyFile = async (bucket: string, key: string, newKey: string) => {
       }
     )
     .promise();
+
+  console.info("[Copy File]: Completed");
 };
