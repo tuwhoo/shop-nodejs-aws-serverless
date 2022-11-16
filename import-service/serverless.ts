@@ -26,6 +26,7 @@ const serverlessConfiguration: AWS = {
       IMPORT_BUCKET_NAME: '${env:IMPORT_BUCKET_NAME}',
       IMPORT_BUCKET_UPLOAD_PREFIX: '${env:IMPORT_BUCKET_UPLOAD_PREFIX}',
       IMPORT_BUCKET_PARSED_PREFIX: '${env:IMPORT_BUCKET_PARSED_PREFIX}',
+      SQS_URL: { Ref: "SQSQueue" },
     },
     iam: {
       role: {
@@ -40,7 +41,23 @@ const serverlessConfiguration: AWS = {
             Action: ['s3:*'],
             Resource: '${env:IMPORT_BUCKET_NAME_ARN}/*',
           },
+          {
+            Effect: "Allow",
+            Action: ["sqs:*"],
+            Resource: { "Fn::GetAtt": ["SQSQueue", "Arn"] },
+          },
         ],
+      },
+    },
+  },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "catalogItemsQueue",
+          // FifoQueue: true, // TODO: to avoid messages duplication
+        },
       },
     },
   },

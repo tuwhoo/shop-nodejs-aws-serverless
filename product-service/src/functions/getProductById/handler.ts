@@ -2,7 +2,7 @@ import type { APIGatewayEvent, Handler } from "aws-lambda"
 
 import * as db from '@libs/db'
 import { dbTables } from "@constants/index";
-import { lambdaWrapper } from '@libs/lambda';
+import { lambdaHttpWrapper } from '@libs/lambda';
 import { formatJSONResponse } from '@libs/api-gateway';
 
 
@@ -15,4 +15,4 @@ const getProductById: Handler = async (event: APIGatewayEvent) => {
   return formatJSONResponse({ message: '404 - Not Found' }, 404)
 };
 
-export const main = lambdaWrapper(getProductById);
+export const main = lambdaHttpWrapper(getProductById);

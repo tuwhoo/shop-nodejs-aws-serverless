@@ -4,6 +4,7 @@ import DocumentationModels from '@models/Documentation';
 import getProductById from '@functions/getProductById';
 import getProductsList from '@functions/getProductsList';
 import createProduct from '@functions/createProduct';
+import catalogBatchProcess from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
@@ -28,6 +29,7 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       PRODUCTS_TABLE_NAME: '${env:PRODUCTS_TABLE_NAME}',
       STOCKS_TABLE_NAME: '${env:STOCKS_TABLE_NAME}',
+      SNS_ARN: { Ref: 'SNSTopic' },
     },
     iam: {
       role: {
@@ -44,11 +46,36 @@ const serverlessConfiguration: AWS = {
             ],
             Resource: ['${env:PRODUCTS_TABLE_ARN}', '${env:STOCKS_TABLE_ARN}']
           },
+          {
+            Effect: "Allow",
+            Action: ["sns:*"],
+            Resource: {
+              Ref: "SNSTopic",
+            },
+          },
         ],
       },
     },
   },
-  functions: { getProductsList, getProductById, createProduct },
+  resources: {
+    Resources: {
+      SNSTopic: {
+        Type: "AWS::SNS::Topic",
+        Properties: { TopicName: "createProductTopic" },
+      },
+      SNSSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Endpoint: "mikita_trukhanavets@epam.com",
+          Protocol: "email",
+          TopicArn: {
+            Ref: "SNSTopic",
+          },
+        },
+      },
+    },
+  },
+  functions: { getProductsList, getProductById, createProduct, catalogBatchProcess },
   package: { individually: true },
   custom: {
     esbuild: {

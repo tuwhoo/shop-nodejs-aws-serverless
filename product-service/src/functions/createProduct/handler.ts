@@ -1,13 +1,12 @@
 import Ajv from "ajv"
-import { v4 } from "uuid";
 import type { APIGatewayEvent, Handler } from "aws-lambda"
 
 import * as db from '@libs/db'
-import { Stock } from "@models/Stock";
-import { Product, ProductInsert, ProductInsertSchema } from "@models/Product";
+import { ProductInsert, ProductInsertSchema } from "@models/Product";
 import { dbTables } from "@constants/index";
-import { lambdaWrapper } from '@libs/lambda';
+import { lambdaHttpWrapper } from '@libs/lambda';
 import { formatJSONResponse } from '@libs/api-gateway';
+import { createProductUtil } from '@libs/create-product-util';
 
 const ajv = new Ajv() 
 
@@ -19,29 +18,12 @@ const createProduct: Handler = async (event: APIGatewayEvent) => {
 
   if (!valid) return formatJSONResponse({ message: 'Product data is invalid' }, 400);
 
-  const id = v4();
-
-  const product: Product = {
-    id,
-    title: requestBody?.title || '',
-    description: requestBody?.description || '',
-    price: requestBody?.price || 0,
-  };
-
-  const stock: Stock = {
-    product_id: id,
-    count: requestBody?.count || 0,
-  }
+  const { product, stock, availableProduct } = createProductUtil(requestBody)
 
   await db.put(dbTables.products, product)
   await db.put(dbTables.stocks, stock)
 
-  const result = {
-    ...product,
-    count: stock.count,
-  }
-
-  return formatJSONResponse(result);
+  return formatJSONResponse(availableProduct);
 };
 
-export const main = lambdaWrapper(createProduct);
+export const main = lambdaHttpWrapper(createProduct);

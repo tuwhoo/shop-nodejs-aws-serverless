@@ -2,7 +2,7 @@ import type { Handler } from "aws-lambda"
 
 import * as db from '@libs/db'
 import { dbTables } from "@constants/index";
-import { lambdaWrapper } from '@libs/lambda';
+import { lambdaHttpWrapper } from '@libs/lambda';
 import { formatJSONResponse } from '@libs/api-gateway';
 
 const getProductList: Handler = async () => {
@@ -17,4 +17,4 @@ const getProductList: Handler = async () => {
   return formatJSONResponse(result);
 };
 
-export const main = lambdaWrapper(getProductList);
+export const main = lambdaHttpWrapper(getProductList);
