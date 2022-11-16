@@ -7,7 +7,15 @@ export default {
       http: {
         method: "get",
         path: "import",
-        cors: true,
+        cors: {
+          origin: "*",
+        },
+        authorizer: {
+          arn: "${env:AUTH_LAMBDA_ARN}",
+          resultTtlInSeconds: 0,
+          identitySource: "method.request.header.Authorization",
+          type: "token",
+        },
       },
     },
   ],
