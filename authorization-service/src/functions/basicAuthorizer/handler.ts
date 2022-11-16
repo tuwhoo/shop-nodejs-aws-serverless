@@ -1,7 +1,7 @@
 import { APIGatewayAuthorizerHandler } from 'aws-lambda';
 import { lambdaWrapper } from '@libs/lambda';
 
-import { generatePolice } from '@libs/generate-policy';
+import { generatePolicy } from '@libs/generate-policy';
 
 
 const basicAuthorizer: APIGatewayAuthorizerHandler = async (event) => {
@@ -20,7 +20,7 @@ const basicAuthorizer: APIGatewayAuthorizerHandler = async (event) => {
       ? 'Allow'
       : 'Deny';
 
-    const policy = generatePolice(creds, event.methodArn, effect);
+    const policy = generatePolicy(creds, event.methodArn, effect);
 
     return policy;
   } catch (error) {

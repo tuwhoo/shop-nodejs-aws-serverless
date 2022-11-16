@@ -1,6 +1,6 @@
 import { APIGatewayAuthorizerResult } from 'aws-lambda';
 
-export const generatePolice = (principalId: string, resource: string, effect = 'Allow'): APIGatewayAuthorizerResult => ({
+export const generatePolicy = (principalId: string, resource: string, effect = 'Allow'): APIGatewayAuthorizerResult => ({
   principalId,
   policyDocument: {
     Version: '2012-10-17',
